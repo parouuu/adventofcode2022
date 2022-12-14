@@ -7,4 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="input.test.txt" />
+    <None Remove="input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="input.test.txt" />
+    <EmbeddedResource Include="input.txt" />
+  </ItemGroup>
+
 </Project>
