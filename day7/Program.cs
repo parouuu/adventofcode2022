@@ -70,20 +70,34 @@ foreach (var line in input)
 
 var dirOkList = new List<DeviceDirectory>();
 
-int ret = GoThroughDirs(home);
-int ret2 = 0;
+var requiredSpace = 30_000_000 - (70_000_000 - home.GetSize());
 
+int result = 70_000_000;
 
-static int GoThroughDirs(DeviceDirectory directory)
+int ret = GoThroughDirs(home, requiredSpace, ref result);
+
+Console.WriteLine($"Total size = {home.GetSize()} ({home.GetSize() - requiredSpace})");
+Console.WriteLine($"Required space = {requiredSpace}");
+Console.WriteLine($"Result = {result}");
+
+int test = 0;
+
+static int GoThroughDirs(DeviceDirectory directory, int requiredSpace, ref int result)
 {
     int val = 0;
 
     foreach (var dir in directory.DirList)
     {
-        val += GoThroughDirs(dir);
+        val += GoThroughDirs(dir, requiredSpace, ref result);
     }
 
-    if (directory.GetSize() < 100000)
-        val += directory.GetSize();
+    val += directory.GetSize();
+
+    if (directory.GetSize() >= requiredSpace && directory.GetSize() < result)
+    {
+        Console.WriteLine($"Setting dir {directory.Name} ({directory.GetSize()}) as target for deletion");
+        result = directory.GetSize();
+    }
+
     return val;
 }
