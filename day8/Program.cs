@@ -1,59 +1,59 @@
 ﻿var input = File.ReadLines($"{Environment.CurrentDirectory}/input.txt").ToList();
 
-static bool IsCoveredLeft(int[] treeArray, int y, int depth = 1)
+static int IsCoveredLeft(int[] treeArray, int y, int depth = 1)
 {
     if (y + 1 == depth)
-        return false;
+        return depth - 1;
 
     int current = treeArray[y];
 
     if (treeArray[y - depth] < current)
-        return IsCoveredLeft(treeArray, y, depth + 1);
+        return IsCoveredLeft(treeArray, y, depth  + 1);
 
-    return true;
+    return depth;
 }
 
-static bool IsCoveredRight(int[] treeArray, int y, int depth = 1)
+static int IsCoveredRight(int[] treeArray, int y, int depth = 1)
 {
     if (treeArray.Length - y == depth)
-        return false;
+        return depth - 1;
 
     int current = treeArray[y];
 
     if (treeArray[y + depth] < current)
         return IsCoveredRight(treeArray, y, depth + 1);
 
-    return true;
+    return depth;
 }
 
-static bool IsCoveredTop(int[][] treeArray, int i, int y, int depth = 1)
+static int IsCoveredTop(int[][] treeArray, int i, int y, int depth = 1)
 {
     if (i + 1 == depth)
-        return false;
+        return depth - 1;
 
     int current = treeArray[i][y];
 
     if (treeArray[i - depth][y] < current)
         return IsCoveredTop(treeArray, i, y, depth + 1);
 
-    return true;
+    return depth;
 }
 
-static bool IsCoveredBottom(int[][] treeArray, int i, int y, int depth = 1)
+static int IsCoveredBottom(int[][] treeArray, int i, int y, int depth = 1)
 {
     if (treeArray[i].Length - i == depth)
-        return false;
+        return depth - 1;
 
     int current = treeArray[i][y];
 
     if (treeArray[i + depth][y] < current)
         return IsCoveredBottom(treeArray, i, y, depth + 1);
 
-    return true;
+    return depth;
 }
-
+ 
 var treeArray = BuildForest(input);
-int count = ((treeArray.Length + treeArray[0].Length) * 2) - 4;
+int result = 0;
 
 for (int i = 1; i < treeArray.Count() - 1; i++)
 {
@@ -64,18 +64,13 @@ for (int i = 1; i < treeArray.Count() - 1; i++)
         var top = IsCoveredTop(treeArray, i, y);
         var bottom = IsCoveredBottom(treeArray, i, y);
 
-
-        if (!IsCoveredLeft(treeArray[i], y) ||
-        !IsCoveredRight(treeArray[i], y) |
-        !IsCoveredTop(treeArray, i, y) ||
-        !IsCoveredBottom(treeArray, i, y))
-        {
-            count++;
-        }
+        var total = left * right * bottom * top;
+        if (total > result)
+            result = total;
     }
 }
 
-Console.WriteLine($"Count: {count}");
+Console.WriteLine($"Count: {result}");
 
 
 static int[][] BuildForest(List<string> input)
