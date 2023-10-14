@@ -1,23 +1,24 @@
-﻿public partial class Rope
+﻿public class Rope
 {
-    public RopePart Head { get; private set; }
-    public RopePart Tail { get; private set; }
+    public List<RopePart> KnotList = new List<RopePart>()
+    {
+        new RopePart(),new RopePart(),new RopePart(),new RopePart(),new RopePart(),new RopePart(),new RopePart(),new RopePart(),new RopePart(),new RopePart()
+    };
     public Dictionary<Direction, Action> DirectionDictionary { get; private set; }
     List<Coord> CoordHistory = new List<Coord>();
 
     public Rope()
     {
-        Head = new RopePart(RopePartType.Head);
-        Tail = new RopePart(RopePartType.Tail);
-
-        CoordHistory.Add(new Coord(Tail.Coord.X, Tail.Coord.Y));
+        var head = KnotList.First();
+        var tail = KnotList.Last();
+        CoordHistory.Add(new Coord(tail.Coord.X, tail.Coord.Y));
 
         DirectionDictionary = new Dictionary<Direction, Action>
         {
-            { Direction.Left, Head.MoveLeft },
-            { Direction.Right, Head.MoveRight },
-            { Direction.Up, Head.MoveUp },
-            { Direction.Down, Head.MoveDown }
+            { Direction.Left, head.MoveLeft },
+            { Direction.Right, head.MoveRight },
+            { Direction.Up, head.MoveUp },
+            { Direction.Down, head.MoveDown }
         };
     }
 
@@ -25,14 +26,21 @@
     {
         DirectionDictionary[direction]();
 
-        if (!Tail.IsInRangeOf(Head))
-        {
-            Tail.GetCloserTo(Head);
+        RopePart previousKnot = KnotList.First();
+        RopePart tail = KnotList.Last();
 
-            if (!CoordHistory.Any(coord => coord.X == Tail.Coord.X && coord.Y == Tail.Coord.Y))
+        foreach (var knot in KnotList.Skip(1))
+        {
+            if (!knot.IsInRangeOf(previousKnot))
             {
-                CoordHistory.Add(new Coord(Tail.Coord.X, Tail.Coord.Y));
+                knot.GetCloserTo(previousKnot);
             }
+            previousKnot = knot;
+        }
+
+        if (!CoordHistory.Any(coord => coord.X == tail.Coord.X && coord.Y == tail.Coord.Y))
+        {
+            CoordHistory.Add(new Coord(tail.Coord.X, tail.Coord.Y));
         }
     }
 
@@ -40,10 +48,11 @@
 
     internal void DrawPath()
     {
-        int minX = -150;//CoordHistory.Min(c => c.X);
-        int maxX = 12;//CoordHistory.Max(c => c.X);
-        int minY = -60;//CoordHistory.Min(c => c.Y);
-        int maxY = 22;//CoordHistory.Max(c => c.Y);
+        const int squareSize = 100;
+        const int minX = -squareSize;
+        const int maxX = squareSize;
+        const int minY = -squareSize;
+        const int maxY = squareSize;
 
         for (int y = maxY; y >= minY; y--)
         {
