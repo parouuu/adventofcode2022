@@ -1,6 +1,6 @@
 ﻿internal class Calculator
 {
-    public int CycleNumber { get; set; }
+    public int ActualCycleNb { get; set; }
     public int TotalValue { get; set; }
     public int Result { get; set; }
 
@@ -18,14 +18,14 @@
     {
         if (line == "noop")
         {
-            CycleNumber++;
+            ActualCycleNb++;
         }
         else
         {
-            CycleNumber += 2;
+            ActualCycleNb += 2;
         }
 
-        if (NextCycle <= CycleNumber)
+        if (NextCycle <= ActualCycleNb)
         {
             Result += TotalValue * NextCycle;
 

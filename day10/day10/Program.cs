@@ -1,10 +1,10 @@
 ﻿var input = File.ReadLines($"{Environment.CurrentDirectory}/input.txt").ToList();
 
-Calculator calculator = new Calculator();
+Television television = new Television();
 
 foreach (var line in input)
 {
-    calculator.Add(line);
+    television.Add(line);
 }
 
-Console.WriteLine($"Result is : {calculator.GetResult()}");
+Console.WriteLine(television.GetImage());
