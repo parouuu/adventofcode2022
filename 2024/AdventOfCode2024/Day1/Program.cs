@@ -14,10 +14,24 @@ foreach (string str in input)
 listOne.Sort();
 listTwo.Sort();
 
+/* PART 1
 int sum = 0;
 for (int i = 0; i < listOne.Count; i++)
 {
     sum += Math.Abs(listOne[i] - listTwo[i]);
+}
+Console.WriteLine(sum);
+*/
+
+// PART 2
+
+int sum = 0;
+
+foreach (int nb in listOne)
+{
+    int nbOccurences = listTwo.Count(x => x == nb);
+
+    sum += nbOccurences * nb;
 }
 
 Console.WriteLine(sum);
